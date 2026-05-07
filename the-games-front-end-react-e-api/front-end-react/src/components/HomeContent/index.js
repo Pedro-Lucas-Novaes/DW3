@@ -4,10 +4,13 @@ import Loading from "../Loading";
 import axios from "axios"; // BIBLIOTECA que permite consumir a API
 // Importando o hook userState e userEffect
 import { useState, useEffect } from "react";
+import EditContent from "../EditContent";
 
 const HomeContent = () => {
   //Criando um estado para a lista de jogos
   const [games, setGames] = useState([]); // Estado inicial array vazio
+  // Criando um estado para o jogo que sera alterado
+  const [selectedGame, setSelectedGame] = useState(null)
 
   // Ciando um estado para controlar o CARREGAMENTO
   const [loading, setLoading] = useState(true);
@@ -45,6 +48,17 @@ const HomeContent = () => {
     } catch (error) {
       console.log(error)
     }
+  }
+  // FUNÇÃO PARA ABRIR O MODAL DE EDIÇÃO
+  const openEditModal = (game) => {
+    // Atualizando o estado do jogo que sera alterado
+    setSelectedGame(game)
+  }
+
+  // FUNÇÃO PARA QUANDO O MODAL FOR FECHADO
+  const closeEditModal = () => {
+    // Limpando o estado do jogo que foi selecionado
+    setSelectedGame(null)
   }
 
   return (
@@ -97,12 +111,24 @@ const HomeContent = () => {
                     >
                       Deletar
                     </button>
+                    {/* Botão de Editar */}
+                    <button className={styles.btnEdit}
+                    onClick={() => openEditModal(game)}>
+                      Editar
+                    </button>
                   </div>
                 </ul>
               ))}
             </div>
           )}
         </div>
+        {/* Renderização condicional para exibir o modal de edição */}
+        {selectedGame && (
+          <EditContent 
+          game={selectedGame}
+          onClose={closeEditModal}
+           />
+        )}
       </div>
     </>
   );
