@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import styles from "@/components/EditContent/EditContent.module.css";
 import axios from "axios";
 
-const EditContent = ({ game, onClose }) => {
+const EditContent = ({ game, onClose, handleUpdate }) => {
   // Criando estados para armazenar os dados do formulario
   const [id, setId] = useState("");
   const [title, setTitle] = useState("");
@@ -24,6 +24,38 @@ const EditContent = ({ game, onClose }) => {
       setPrice(game.price);
     }
   }, [game]); //Dependência do useEffect. É o que faz o useEffect ser associado novamente, quando aquela informação é alterada
+
+  // FUNÇÃO DE UPDATE
+  const handleSubimit = async (a) => {
+    // Evitando que o formulario recarregue a página
+    // a.preventDefault()
+    // Criando o json (objeto) com as informações do jogo
+    const updatedGame = {
+      title,
+      year,
+      price,
+      descriptions: {
+        platform,
+        genre,
+        rating
+
+      }
+    }
+    // ENVIANDO PARA A PAI
+    try {
+      const response = await axios.put(
+        `http://localhost:4000/games/${id}`,
+        updatedGame
+      )
+      if (response.status === 200) {
+        alert("O jogo foi alterado com sucesso!")
+        // PASSAR O JOGO ALTERADO PARA O COMPONENTE PAI (HOMECONTENT)
+        handleUpdate(response.date.game)
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
   return (
     <>
       {/* CARD EDIÇÃO */}
@@ -37,7 +69,7 @@ const EditContent = ({ game, onClose }) => {
           <div className="title">
             <h2>Editar jogo</h2>
           </div>
-          <form id="editForm">
+          <form id="editForm" onSubmit={handleSubimit}>
             <input type="hidden" name="id" />
             <input
               type="text"
@@ -95,12 +127,6 @@ const EditContent = ({ game, onClose }) => {
             />
             <input type="submit" value="Alterar" className="btnPrimary" />
           </form>
-          {title}<br/>
-          {platform}<br/>
-          {genre}<br/>
-          {rating}<br/>
-          {year}<br/>
-          {price}
         </div>
       </div>
     </>

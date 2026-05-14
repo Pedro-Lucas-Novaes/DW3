@@ -10,7 +10,7 @@ const HomeContent = () => {
   //Criando um estado para a lista de jogos
   const [games, setGames] = useState([]); // Estado inicial array vazio
   // Criando um estado para o jogo que sera alterado
-  const [selectedGame, setSelectedGame] = useState(null)
+  const [selectedGame, setSelectedGame] = useState(null);
 
   // Ciando um estado para controlar o CARREGAMENTO
   const [loading, setLoading] = useState(true);
@@ -39,27 +39,34 @@ const HomeContent = () => {
     try {
       const response = await axios.delete(`
         http://localhost:4000/games/${gameId}
-        `)
-        if (response.status === 204) {
-          alert("O jogo foi excluido com sucesso!")
-          // Atualizando o estado removendo o jogo excluido
-          setGames(games.filter((game) => game._id !== gameId))
-        }
+        `);
+      if (response.status === 204) {
+        alert("O jogo foi excluido com sucesso!");
+        // Atualizando o estado removendo o jogo excluido
+        setGames(games.filter((game) => game._id !== gameId));
+      }
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
-  }
+  };
   // FUNÇÃO PARA ABRIR O MODAL DE EDIÇÃO
   const openEditModal = (game) => {
     // Atualizando o estado do jogo que sera alterado
-    setSelectedGame(game)
-  }
+    setSelectedGame(game);
+  };
 
   // FUNÇÃO PARA QUANDO O MODAL FOR FECHADO
   const closeEditModal = () => {
     // Limpando o estado do jogo que foi selecionado
-    setSelectedGame(null)
-  }
+    setSelectedGame(null);
+  };
+  // FUNÇÃO QUE ATUALIZA A LISTA DE JOGOs COM O JOGO ALTERADO
+  const handleUpdate = (updatedGame) => {
+    setGames(
+      games.map((game) => (game._id === updatedGame._id ? updatedGame : game)),
+    );
+    closeEditModal();
+  };
 
   return (
     <>
@@ -103,17 +110,19 @@ const HomeContent = () => {
                           "Deseja mesmo excluir o jogo?",
                         );
                         // Se o valor for verdadeiro
-                        if (confirmacao){
+                        if (confirmacao) {
                           // Invocando a função de deletar
-                          deleteGame(game._id)
+                          deleteGame(game._id);
                         }
                       }}
                     >
                       Deletar
                     </button>
                     {/* Botão de Editar */}
-                    <button className={styles.btnEdit}
-                    onClick={() => openEditModal(game)}>
+                    <button
+                      className={styles.btnEdit}
+                      onClick={() => openEditModal(game)}
+                    >
                       Editar
                     </button>
                   </div>
@@ -124,10 +133,7 @@ const HomeContent = () => {
         </div>
         {/* Renderização condicional para exibir o modal de edição */}
         {selectedGame && (
-          <EditContent 
-          game={selectedGame}
-          onClose={closeEditModal}
-           />
+          <EditContent game={selectedGame} onClose={closeEditModal} handleUpdate={handleUpdate} />
         )}
       </div>
     </>
