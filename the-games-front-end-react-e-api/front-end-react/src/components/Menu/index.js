@@ -4,9 +4,16 @@ import { IoClose } from "react-icons/io5";
 import styles from "@/components/Menu/Menu.module.css";
 import Link from "next/link";
 
+// Importando a função de logout
+import { logout } from "@/services/authService.js";
+// Importando o useRouter
+import { useRouter } from "next/router.js";
+
 const Menu = () => {
   const [menuIcon, setMenuIcon] = useState(<FaBars />);
   const [isActive, setIsActive] = useState(false);
+  // Iniciando o useRouter
+  const router = useRouter()
 
   const activeMenu = () => {
     setIsActive(!isActive);
@@ -37,7 +44,7 @@ const Menu = () => {
             <Link href="/create">Cadastrar jogos</Link>
           </li>
           <li>
-            <Link href="/">Logout</Link>
+            <a onClick={() => logout(router)} href="#">Logout</a>
           </li>
         </ul>
       </div>

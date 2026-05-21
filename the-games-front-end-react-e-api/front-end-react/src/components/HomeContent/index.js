@@ -41,7 +41,7 @@ const HomeContent = () => {
     try {
       const response = await axios.delete(`
         http://localhost:4000/games/${gameId}
-        `);
+        `, getAxiosConfig());
       if (response.status === 204) {
         alert("O jogo foi excluido com sucesso!");
         // Atualizando o estado removendo o jogo excluido

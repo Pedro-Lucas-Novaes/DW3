@@ -24,3 +24,9 @@ export const login = async (email, password) => {
     return { success: false, message: error.message };
   }
 };
+
+// Função que realiza o logout
+export const logout = (router) => {
+  localStorage.removeItem("token");
+  router.push("/");
+};
